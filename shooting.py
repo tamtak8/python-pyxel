@@ -18,20 +18,22 @@ ENEMY_COLOR = 2
 ENEMY_SPEED = 1.5
 ENEMY_FREQUENCY = 9
 
+# 敵の数だけ要素を追加
 enemies = []
+# 弾の数だけ要素を追加
 bullets = []
 
-
+# リストの要素を更新
 def update_list(list):
     for elem in list:
         elem.update()
 
-
+# リストの要素を描画
 def draw_list(list):
     for elem in list:
         elem.draw()
 
-
+# リストの要素を初期化
 def cleanup_list(list):
     i = 0
     while i < len(list):
@@ -41,69 +43,95 @@ def cleanup_list(list):
         else:
             i += 1
 
-
+# プレイヤーを管理するクラス
 class Player:
+    # 初期化
     def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.size = PLAYER_SIZE
-        self.is_alive = True
-
+        self.x = x  # x座標
+        self.y = y  # y座標
+        self.size = PLAYER_SIZE  # 大きさ
+        self.is_alive = True  #生きているかどうか
+        
+    # プレイヤーが移動するため、更新する
     def update(self):
+        # ←キーが押されたらx座標、-方向へ
         if pyxel.btn(pyxel.KEY_LEFT):
             self.x -= PLAYER_SPEED
+        # →キーが押されたらx座標、+方向へ
         if pyxel.btn(pyxel.KEY_RIGHT):
             self.x += PLAYER_SPEED
+        # ↑キーが押されたらy座標、-方向へ
         if pyxel.btn(pyxel.KEY_UP):
             self.y -= PLAYER_SPEED
+        # ↓キーが押されたらy座標、+方向へ
         if pyxel.btn(pyxel.KEY_DOWN):
             self.y += PLAYER_SPEED
+            
+        # プレイヤーが領域を出ないようにする
+        # 左側
         self.x = max(self.x, 0)
+        # 右側
         self.x = min(self.x, pyxel.width - self.size)
+        # 上端
         self.y = max(self.y, 0)
+        # 下端
         self.y = min(self.y, pyxel.height - self.size)
 
+        # スペースキーを押すと、弾をとばす
         if pyxel.btnp(pyxel.KEY_SPACE):
+            # プレイヤーの位置から、少し離れて弾が置かれる
             Bullet(
                 self.x + PLAYER_SIZE / 2 - BULLET_WIDTH * 2, self.y - PLAYER_SIZE * 1.5
             )
+            # 効果音
             pyxel.play(0, 0)
-
+            
+    # プレイヤー（円形）を描画
     def draw(self):
         pyxel.circ(self.x, self.y, self.size, PLAYER_COLOR)
 
-
+# 弾を管理するクラス
 class Bullet:
+    # 初期化
     def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.w = BULLET_WIDTH
-        self.h = BULLET_HEIGHT
-        self.is_alive = True
-        bullets.append(self)
-
+        self.x = x  # x座標
+        self.y = y  # y座標
+        self.w = BULLET_WIDTH  # 幅
+        self.h = BULLET_HEIGHT  # 高さ
+        self.is_alive = True  # 生きているかどうか
+        bullets.append(self) # 弾のリスト作成
+    
+    # 弾がとんでいくため、更新
     def update(self):
+        # 上方向に飛んでいくため、スピード分だけy座標を減らす
         self.y -= BULLET_SPEED
+        # 画面より上に行くと、弾が消える
         if self.y + self.h - 1 < 0:
             self.is_alive = False
-
+            
+    # 弾（長方形）を描画
     def draw(self):
         pyxel.rect(self.x, self.y, self.w, self.h, BULLET_COLOR)
 
-
+# 敵を管理するクラス
 class Enemy:
+    # 初期化
     def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.size = ENEMY_SIZE
-        self.is_alive = True
-        enemies.append(self)
-
+        self.x = x  # x座標
+        self.y = y  # y座標
+        self.size = ENEMY_SIZE  #大きさ
+        self.is_alive = True  #生きているかどうか
+        enemies.append(self)  #敵のリストを作成
+        
+    # 敵が移動するため、更新
     def update(self):
+        # 下方向へ移動する
         self.y += ENEMY_SPEED
+        # 画面より下に行くと、敵が消える
         if self.y > pyxel.height - 1 + ENEMY_SIZE:
             self.is_alive = False
-
+            
+    # 敵（丸）を描画
     def draw(self):
         pyxel.circ(self.x, self.y, self.size, ENEMY_COLOR)
 
