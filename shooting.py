@@ -135,20 +135,23 @@ class Enemy:
     def draw(self):
         pyxel.circ(self.x, self.y, self.size, ENEMY_COLOR)
 
-
+# 全体の更新処理、描画処理を管理
 class App:
     def __init__(self):
-        pyxel.init(200, 200)
-        pyxel.load('resource.pyxres')
-        self.scene = SCENE_TITLE
-        self.score = 0
-        self.player = Player(pyxel.width / 2, pyxel.height - 20)
-        pyxel.run(self.update, self.draw)
-
+        pyxel.init(200, 200)  # ゲームの領域 
+        pyxel.load('resource.pyxres')  # ファイル読み込み
+        self.scene = SCENE_TITLE  # ゲーム画面
+        self.score = 0  # スコア
+        self.player = Player(pyxel.width / 2, pyxel.height - 20)  # プレイヤークラス初期化
+        pyxel.run(self.update, self.draw)  # 実行
+    
+    # 更新処理
     def update(self):
+        # qを押すと、ゲーム終了
         if pyxel.btn(pyxel.KEY_Q):
             pyxel.quit()
-
+            
+        # シーンの場合分け
         if self.scene == SCENE_TITLE:
             self.update_title_scene()
         elif self.scene == SCENE_PLAY:
@@ -156,50 +159,59 @@ class App:
         elif self.scene == SCENE_GAMEOVER:
             self.update_gameover_scene()
 
+    # タイトルシーン
     def update_title_scene(self):
+        # エンターキーを押すと、スタート
         if pyxel.btnp(pyxel.KEY_SPACE):
             self.scene = SCENE_PLAY
 
+    
     def update_play_scene(self):
+        # フレーム数がENEMY_FREQUENCYで割り切れる時、敵を生成
         if pyxel.frame_count % ENEMY_FREQUENCY == 0:
             Enemy(pyxel.rndi(0, pyxel.width - ENEMY_SIZE), - ENEMY_SIZE)
 
+        # 敵に弾が当たっているか、敵の数だけ判定する
         for enemy in enemies:
             for bullet in bullets:
                 if (
-                    enemy.x + enemy.size > bullet.x
+                    enemy.x + enemy.size > bullet.x  # 敵と弾の位置、サイズ
                     and bullet.x + bullet.w > enemy.x - enemy.size
                     and enemy.y + enemy.size > bullet.y
                     and bullet.y + bullet.h > enemy.y - enemy.size
-                ):
-                    enemy.is_alive = False
-                    bullet.is_alive = False
-                    pyxel.play(1, 1)
-                    self.score += 10
-
+                ):  # 弾が敵に当たった時
+                    enemy.is_alive = False  # 敵を消す
+                    bullet.is_alive = False  # 弾を消す
+                    pyxel.play(1, 1)  # 効果音
+                    self.score += 10  # スコアを増やす
+        
+        # プレイヤーが敵と当たっているか、敵の数だけ判定する
         for enemy in enemies:
             if (
-                self.player.x + self.player.size > enemy.x - enemy.size
+                self.player.x + self.player.size > enemy.x - enemy.size  # プレイヤーと敵の位置、サイズ
                 and enemy.x + enemy.size > self.player.x - self.player.size
                 and self.player.y + self.player.size > enemy.y - enemy.size
                 and enemy.y + enemy.size > self.player.y - self.player.size
-            ):
-                enemy.is_alive = False
-                pyxel.play(1, 1)
-                self.scene = SCENE_GAMEOVER
+            ):  # プレイヤーが敵に当たった時
+                enemy.is_alive = False  # 敵が消える
+                pyxel.play(1, 1)  # 効果音
+                self.scene = SCENE_GAMEOVER  # ゲームオーバー画面
 
-        self.player.update()
-        update_list(bullets)
-        update_list(enemies)
-        cleanup_list(enemies)
-        cleanup_list(bullets)
+        
+        self.player.update()  # プレイヤーの移動、状態の更新
+        update_list(bullets)  # リスト内の弾の状態を更新
+        update_list(enemies)  # 敵の動きや状態を更新
+        cleanup_list(enemies)  # 画面外に出た敵を消す
+        cleanup_list(bullets)  # 画面外に出た弾を消す
 
+    # ゲームオーバーになった際の更新
     def update_gameover_scene(self):
-        update_list(bullets)
-        update_list(enemies)
-        cleanup_list(enemies)
-        cleanup_list(bullets)
+        update_list(bullets)  # リスト内の弾の状態を更新
+        update_list(enemies)  # リスト内の敵の動きや状態を更新
+        cleanup_list(enemies)  # 画面外に出た敵を消す
+        cleanup_list(bullets)  # 画面外に出た弾を消す
 
+        # スペースキーを押すとプレイ画面に戻る
         if pyxel.btnp(pyxel.KEY_SPACE):
             self.scene = SCENE_PLAY
             self.player.x = pyxel.width / 2
