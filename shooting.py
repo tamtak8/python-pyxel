@@ -162,7 +162,7 @@ class App:
     # タイトルシーン
     def update_title_scene(self):
         # エンターキーを押すと、スタート
-        if pyxel.btnp(pyxel.KEY_SPACE):
+        if pyxel.btnp(pyxel.KEY_ENTER):
             self.scene = SCENE_PLAY
 
     
@@ -211,42 +211,44 @@ class App:
         cleanup_list(enemies)  # 画面外に出た敵を消す
         cleanup_list(bullets)  # 画面外に出た弾を消す
 
-        # スペースキーを押すとプレイ画面に戻る
-        if pyxel.btnp(pyxel.KEY_SPACE):
+        # エンターキーを押すとプレイ画面に戻る
+        if pyxel.btnp(pyxel.KEY_ENTER):
             self.scene = SCENE_PLAY
-            self.player.x = pyxel.width / 2
+            self.player.x = pyxel.width / 2  # プレイヤーの位置を初期化、画面の中央に
             self.player.y = pyxel.height - 20
-            self.score = 0
-            enemies.clear()
-            bullets.clear()
+            self.score = 0  # スコアリセット
+            enemies.clear()  # 敵リストをリセット
+            bullets.clear()  # 弾リストをリセット
 
+    # 描画処理
     def draw(self):
-        pyxel.cls(7)
-        # self.background.draw()
-        if self.scene == SCENE_TITLE:
+        pyxel.cls(7)  # 画面を黒でクリア（塗りつぶし）
+        if self.scene == SCENE_TITLE:  # タイトル画面
             self.draw_title_scene()
-        elif self.scene == SCENE_PLAY:
+        elif self.scene == SCENE_PLAY:  # プレイ画面
             self.draw_play_scene()
-        elif self.scene == SCENE_GAMEOVER:
+        elif self.scene == SCENE_GAMEOVER:  # ゲームオーバー画面
             self.draw_gameover_scene()
 
+    # タイトル画面
     def draw_title_scene(self):
-        # pyxel.text(75, 60, "SHOOTING GAME", 0)
-        pyxel.blt(16, 60, 0, 0, 0, 168, 12, 7)
-        pyxel.text(80, 140, "PRESS SPACE", 0)
+        pyxel.blt(16, 60, 0, 0, 0, 168, 12, 7)  # イメージ描画
+        pyxel.text(80, 140, "PRESS ENTER", 0)  # テキスト描画
 
+    # プレイ画面
     def draw_play_scene(self):
-        pyxel.text(4, 4, "SCORE " + str(self.score), 0)
-        self.player.draw()
-        draw_list(bullets)
-        draw_list(enemies)
+        pyxel.text(4, 4, "SCORE " + str(self.score), 0)  # スコア表示
+        self.player.draw()  # プレイヤー表示
+        draw_list(bullets)  # 弾表示
+        draw_list(enemies)  # 敵表示
 
+    # ゲームオーバー画面
     def draw_gameover_scene(self):
-        pyxel.text(4, 4, "SCORE " + str(self.score), 0)
-        draw_list(bullets)
-        draw_list(enemies)
-        pyxel.text(82, 60, "GAME OVER", 0)
-        pyxel.text(80, 140, "PRESS SPACE", 0)
+        pyxel.text(4, 4, "SCORE " + str(self.score), 0)  # スコア表示
+        draw_list(bullets)  # 弾の描画
+        draw_list(enemies)  # 敵の描画
+        pyxel.text(82, 60, "GAME OVER", 0)  # ゲームオーバー表示
+        pyxel.text(80, 140, "PRESS ENTER", 0)  # "PRESS ENTER" 表示
 
 
 App()
