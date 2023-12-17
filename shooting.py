@@ -223,6 +223,7 @@ class App:
     # 描画処理
     def draw(self):
         pyxel.cls(7)  # 画面を黒でクリア（塗りつぶし）
+        # self.background.draw()
         if self.scene == SCENE_TITLE:  # タイトル画面
             self.draw_title_scene()
         elif self.scene == SCENE_PLAY:  # プレイ画面
@@ -232,6 +233,7 @@ class App:
 
     # タイトル画面
     def draw_title_scene(self):
+        # pyxel.text(75, 60, "SHOOTING GAME", 0)
         pyxel.blt(16, 60, 0, 0, 0, 168, 12, 7)  # イメージ描画
         pyxel.text(80, 140, "PRESS ENTER", 0)  # テキスト描画
 
