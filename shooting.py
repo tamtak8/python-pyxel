@@ -161,8 +161,8 @@ class App:
 
     # タイトルシーン
     def update_title_scene(self):
-        # エンターキーを押すと、スタート
-        if pyxel.btnp(pyxel.KEY_ENTER):
+        # スペースキーを押すと、スタート
+        if pyxel.btnp(pyxel.KEY_SPACE):
             self.scene = SCENE_PLAY
 
     
@@ -211,8 +211,8 @@ class App:
         cleanup_list(enemies)  # 画面外に出た敵を消す
         cleanup_list(bullets)  # 画面外に出た弾を消す
 
-        # エンターキーを押すとプレイ画面に戻る
-        if pyxel.btnp(pyxel.KEY_ENTER):
+        # スペースキーを押すとプレイ画面に戻る
+        if pyxel.btnp(pyxel.KEY_SPACE):
             self.scene = SCENE_PLAY
             self.player.x = pyxel.width / 2  # プレイヤーの位置を初期化、画面の中央に
             self.player.y = pyxel.height - 20
@@ -223,7 +223,7 @@ class App:
     # 描画処理
     def draw(self):
         pyxel.cls(7)  # 画面を黒でクリア（塗りつぶし）
-        self.background.draw()
+        # self.background.draw()
         if self.scene == SCENE_TITLE:  # タイトル画面
             self.draw_title_scene()
         elif self.scene == SCENE_PLAY:  # プレイ画面
@@ -233,9 +233,9 @@ class App:
 
     # タイトル画面
     def draw_title_scene(self):
-        pyxel.text(75, 60, "SHOOTING GAME", 0)
+        # pyxel.text(75, 60, "SHOOTING GAME", 0)
         pyxel.blt(16, 60, 0, 0, 0, 168, 12, 7)  # イメージ描画
-        pyxel.text(80, 140, "PRESS ENTER", 0)  # テキスト描画
+        pyxel.text(80, 140, "PRESS SPACE", 0)  # テキスト描画
 
     # プレイ画面
     def draw_play_scene(self):
@@ -250,7 +250,7 @@ class App:
         draw_list(bullets)  # 弾の描画
         draw_list(enemies)  # 敵の描画
         pyxel.text(82, 60, "GAME OVER", 0)  # ゲームオーバー表示
-        pyxel.text(80, 140, "PRESS ENTER", 0)  # "PRESS ENTER" 表示
+        pyxel.text(80, 140, "PRESS SPACE", 0)  # PRESS SPACEを表示
 
 
 App()
